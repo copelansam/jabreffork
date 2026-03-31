@@ -15,6 +15,7 @@ import org.jabref.model.entry.types.StandardEntryType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,5 +44,26 @@ class NewEntryActionTest {
 
         newEntryAction.execute();
         verify(libraryTab, times(1)).insertEntry(new BibEntry(type));
+    }
+
+    // Passing an EntryType object into the constructor will make the isImmediate field be assigned to true
+    @Test
+    void executeOnFailureWithNoDatabaseFromShortcut(){
+        EntryType type = StandardEntryType.Article;
+        newEntryAction = new NewEntryAction(type, () -> null, dialogService, preferences, stateManager);
+
+        newEntryAction.execute();
+        verify(libraryTab, times(0)).insertEntry(any());
+        verify(dialogService, times(0)).showCustomDialogAndWait(any());
+    }
+
+    @Test
+    void executeOnFailureWithNoDatabaseFromUserDecision(){
+        EntryType type = StandardEntryType.Article;
+        newEntryAction = new NewEntryAction(false, () -> null, dialogService, preferences, stateManager);
+
+        newEntryAction.execute();
+        verify(libraryTab, times(0)).insertEntry(any());
+        verify(dialogService, times(0)).showCustomDialogAndWait(any());
     }
 }
