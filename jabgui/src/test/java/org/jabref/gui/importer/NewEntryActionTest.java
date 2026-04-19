@@ -54,6 +54,7 @@ class NewEntryActionTest {
         verify(libraryTab, times(1)).insertEntry(new BibEntry(type));
     }
 
+    // Comment
     @Test
     void executeOnFailureWithNoDatabaseFromShortcut() {
 
